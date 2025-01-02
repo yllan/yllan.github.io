@@ -24,6 +24,9 @@ const humanDate = (yyyymmdd: string) => {
 
 export default component$(() => {
   const posts = useStories();
+  const years = Array.from(new Set(posts.map((post) => post.date.split("-")[0]))
+  ).sort((a, b) => parseInt(b) - parseInt(a));
+
   return (
     <div class="mx-auto mt-16 w-[600px]">
       <header class="w-lg my-12">
@@ -55,24 +58,27 @@ export default component$(() => {
         </section>
       </header>
       <main class="">
-        <h2 class="my-4 text-2xl font-bold">2024</h2>
-        <menu>
-          {posts.map((post, idx) => (
-            <Link key={idx} href={"/stories/" + post.link} class="my-4 block">
-              <div class="flex items-baseline hover:underline">
-                <h2 class="max-w-md overflow-hidden overflow-ellipsis whitespace-nowrap">
-                  {post.title}
-                </h2>
+        {years.map((year) => 
+          <>
+            <h2 key={year} class="my-4 text-2xl font-bold">{year}</h2>
+            <menu>
+            {posts.filter(post => post.date.split('-')[0] === year).map((post, idx) => (
+              <Link key={idx} href={"/stories/" + post.link} class="my-4 block">
+                <div class="flex items-baseline hover:underline">
+                  <h2 class="max-w-md overflow-hidden overflow-ellipsis whitespace-nowrap">
+                    {post.title}
+                  </h2>
 
-                <hr class="mx-2 flex-shrink-0 flex-grow border-0 border-b border-dotted border-gray-600" />
-                <time>{humanDate(post.date)}</time>
-              </div>
-              <p class="mt-1 line-clamp-2 max-w-[480px] text-justify text-xs font-extralight leading-5 text-gray-500 no-underline">
-                {post.description}
-              </p>
-            </Link>
-          ))}
-        </menu>
+                  <hr class="mx-2 flex-shrink-0 flex-grow border-0 border-b border-dotted border-gray-600" />
+                  <time>{humanDate(post.date)}</time>
+                </div>
+                <p class="mt-1 line-clamp-2 max-w-[480px] text-justify text-xs font-extralight leading-5 text-gray-500 no-underline">
+                  {post.description}
+                </p>
+              </Link>
+            ))}
+          </menu>
+          </>)}
       </main>
       <footer class="my-10 text-center text-xs italic text-gray-500">
         - 1 -
